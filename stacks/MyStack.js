@@ -7,7 +7,8 @@ export default class MyStack extends sst.Stack {
     // Create a HTTP API
     const api = new sst.Api(this, "Api", {
       routes: {
-        "GET /": "src",
+        "POST /api/user": "cmd/status",
+        "POST /api/question": "cmd/questions",
       }
     });
 
