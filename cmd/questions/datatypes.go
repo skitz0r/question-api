@@ -14,6 +14,11 @@ type Script struct {
 	QuestionIds []string // This should be an ordered set but it seems like go just wants me to use Slices everywhere so lets roll with it?
 }
 
+type QuestionWrapper struct {
+	Question Question
+	ScriptId string
+}
+
 type ScriptEntry struct {
 	Question Question
 }
@@ -31,6 +36,11 @@ type Answer struct {
 	UserId     string
 	QuestionId string
 	ScriptId   string
+	Payload    string
+}
+
+type SmallAnswer struct {
+	Id string
 }
 
 type User struct {

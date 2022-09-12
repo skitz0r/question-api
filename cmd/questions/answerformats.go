@@ -1,17 +1,17 @@
 package main
 
 var BooleanFormat = AnswerFormat{
-	Id: "0",
+	Id: "bool",
 }
 
 var DateFormat = AnswerFormat{
-	Id: "1",
+	Id: "date",
 }
 
 var TextFormat = AnswerFormat{
-	Id: "2",
+	Id: "text",
 }
 
 var IntegerFormat = AnswerFormat{
-	Id: "3",
+	Id: "int",
 }
