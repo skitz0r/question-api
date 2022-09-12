@@ -6,13 +6,13 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type TestCase struct {
+type QuestionBankTestCase struct {
 	expected string
 	actual   string
 }
 
 func TestGetQuestion1(t *testing.T) {
-	testCase := TestCase{
+	testCase := QuestionBankTestCase{
 		expected: Question1.Body,
 	}
 

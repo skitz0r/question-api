@@ -34,5 +34,5 @@ func GetQuestion(questionId string) (*Question, error) {
 	case "2":
 		return &Question2, nil
 	}
-	return nil, errors.New("Unknown question ID")
+	return nil, errors.New("unknown question id")
 }

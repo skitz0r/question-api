@@ -10,7 +10,8 @@ type Question struct {
 }
 
 type Script struct {
-	Id string
+	Id          string
+	QuestionIds []string // This should be an ordered set but it seems like go just wants me to use Slices everywhere so lets roll with it?
 }
 
 type ScriptEntry struct {
@@ -26,7 +27,10 @@ type AnswerFormat struct {
 }
 
 type Answer struct {
-	Id string
+	Id         string
+	UserId     string
+	QuestionId string
+	ScriptId   string
 }
 
 type User struct {
