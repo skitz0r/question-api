@@ -4,20 +4,17 @@ import (
 	"fmt"
 )
 
-// My thought here is that this might talk to a DB or just progress the User to the next question
-// and roll back later if needed so we don't have frequent DB reads
-
 var TestScript Script = Script{
 	Id:          "test",
 	QuestionIds: []string{Question0.Id, Question1.Id, Question2.Id},
-	// TODO can I bake a lambda in here to figure out the next question to ask?
+	// TODO can I bake a lambda in here to figure out the next question dynamically? maybe an interface entry on Script
 }
 
 type ScriptIndexWalker interface {
 	nextIndex(answer Answer) (string, error)
 }
 
-// TODO this is very bug prone, would rather have a map of QuestionId -> QuestionId for progression
+// TODO would rather have a map of QuestionId -> QuestionId for progression, this index stuff is not readable and buggy
 func nextIndex(script Script, answer Answer) (int, error) {
 	for index, id := range script.QuestionIds {
 		if answer.QuestionId == id {
@@ -37,7 +34,7 @@ func lastQuestion(questionIndex int, questions []string) bool {
 }
 
 func NextQuestion(answer Answer) (*Question, error) {
-	script, scripterr := getScript(ScriptServiceSingle, answer.ScriptId)
+	script, scripterr := getScript(answer.ScriptId)
 
 	if scripterr != nil {
 		return nil, scripterr
@@ -69,13 +66,13 @@ func NextQuestion(answer Answer) (*Question, error) {
 }
 
 // Define a service and singleton to represent it... just experimenting here
-var ScriptServiceSingle ScriptService = *NewScriptService()
+var ScriptServiceSingle ScriptService = *newScriptService()
 
 type ScriptService struct {
 	ScriptMap map[string]Script
 }
 
-func NewScriptService() *ScriptService {
+func newScriptService() *ScriptService {
 	idToScript := map[string]Script{
 		TestScript.Id: TestScript,
 	}
@@ -85,11 +82,19 @@ func NewScriptService() *ScriptService {
 	return service
 }
 
-// TODO is there a way to mark this as the API of this object? seems not very go-like
-// TODO how to handle map misses? looks like you get a "zero value" of the Script type?
-func getScript(service ScriptService, scriptId string) (*Script, error) {
-	if script, ok := service.ScriptMap[scriptId]; ok {
+func getScript(scriptId string) (*Script, error) {
+	if script, ok := ScriptServiceSingle.ScriptMap[scriptId]; ok {
 		return &script, nil
 	}
 	return nil, fmt.Errorf("couldn't find a script with id %s", scriptId)
+}
+
+// "Script.GetQuestions" if we wanted to include them in the summary
+func _(script Script) []Question {
+	var questions []Question
+	for _, questionId := range script.QuestionIds {
+		question, _ := GetQuestion(questionId)
+		questions = append(questions, *question)
+	}
+	return questions
 }

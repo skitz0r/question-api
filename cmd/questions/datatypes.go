@@ -15,8 +15,9 @@ type Script struct {
 }
 
 type QuestionWrapper struct {
-	Question Question
-	ScriptId string
+	Question        Question
+	ScriptId        string
+	PreviousAnswers []Answer
 }
 
 type ScriptEntry struct {

@@ -14,7 +14,11 @@ var IntegerFormat = AnswerFormat{
 	Id: "int",
 }
 
-type FormateValidate interface {
+var SummaryFormat = AnswerFormat{
+	Id: "summary",
+}
+
+type FormatValidate interface {
 	IsValid(data string) bool
 }
 

@@ -2,14 +2,11 @@ package main
 
 import "errors"
 
-// realistically these should be objects in a DB, but we're gonna spoof it with a [questionId -> Question] map
-// and just hard code a bunch of nebulous question objects
-
 // visible for testing
 var Question0 = Question{
 	Id:           "q0",
 	Body:         "Hi [Patient First Name], on a scale of 1-10, would you recommend Dr [Doctor Last Name] to a friend or family member? 1 = Would not recommend, 10 = Would strongly recommend",
-	AnswerFormat: IntegerFormat,
+	AnswerFormat: IntegerFormat, //TODO this should support bounding for the 1-10 part, but that seems simple lets ignore for now
 }
 
 // TODO this question should branch if they say no and ask for clarification
@@ -26,8 +23,9 @@ var Question2 = Question{
 }
 
 var Summary = Question{
-	Id:   "summary",
-	Body: "I am placeholder behavior for a summary because none of your answers were stored anywhere. Thanks for playing.",
+	Id:           "summary",
+	Body:         "Thanks again! Here’s what we heard:",
+	AnswerFormat: SummaryFormat,
 }
 
 func GetQuestion(questionId string) (*Question, error) {

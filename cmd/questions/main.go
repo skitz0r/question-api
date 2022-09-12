@@ -10,6 +10,14 @@ import (
 
 func Handler(request events.APIGatewayV2HTTPRequest) (events.APIGatewayProxyResponse, error) {
 	var userAnswer Answer = parseJson(request.Body)
+
+	// Good practice is probably to have this be a very simple implementation, should do persistence somewhere else.
+	askedQuestion, _ := GetQuestion(userAnswer.QuestionId)
+	expectedFormat := askedQuestion.AnswerFormat
+	if IsValid(expectedFormat, userAnswer.Payload) {
+		PersistAnswer(userAnswer)
+	}
+
 	return events.APIGatewayProxyResponse{
 		Body:       getNextQuestionBody(userAnswer),
 		StatusCode: 200,
@@ -26,15 +34,9 @@ func parseJson(requestBody string) Answer {
 	return args
 }
 
-//TODO figure out how to put this into a model package... or if that is a good practice here
-// these are the classes/types described in the doc diagram
-
-// next implement question routing and figure out the response object shape and how to marshall it
-// also figure out how to import https://github.com/samply/golang-fhir-models to the project
-
-// This function handles a QuestionRequest and determines what Question the user should be asked
-// next based on the Script.
 func getNextQuestionBody(answer Answer) string {
+
+	// Get the next question, the summary, or ask the same thing again if we don't like their answer for some reason.
 	nextQuestion, qerr := NextQuestion(answer)
 
 	if qerr != nil {
@@ -42,8 +44,9 @@ func getNextQuestionBody(answer Answer) string {
 	}
 
 	var response = QuestionWrapper{
-		Question: *nextQuestion,
-		ScriptId: answer.ScriptId,
+		Question:        *nextQuestion,
+		ScriptId:        answer.ScriptId,
+		PreviousAnswers: GetAnswers(answer.UserId, answer.ScriptId),
 	}
 
 	var bytes, jerr = json.MarshalIndent(response, "", "\t")

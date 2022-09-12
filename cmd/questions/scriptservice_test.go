@@ -58,7 +58,7 @@ func TestScriptProgression(t *testing.T) {
 
 	// Expect that Question2 comes after Question1
 	after2, _ := NextQuestion(answer2)
-	assert.Equal(t, Summary.Id, after2.Id)
+	assert.Equal(t, SummaryFormat.Id, after2.Id)
 }
 
 func TestBadInputLoops(t *testing.T) {
