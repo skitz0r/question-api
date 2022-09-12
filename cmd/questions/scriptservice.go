@@ -49,6 +49,12 @@ func NextQuestion(answer Answer) (*Question, error) {
 		return GetQuestion(script.QuestionIds[0])
 	}
 
+	askedQuestion, _ := GetQuestion(answer.QuestionId)
+	expectedFormat := askedQuestion.AnswerFormat
+	if !IsValid(expectedFormat, answer.Payload) {
+		return askedQuestion, nil
+	}
+
 	nextId, err := nextIndex(*script, answer)
 
 	if nextId == -1 {
@@ -82,7 +88,6 @@ func NewScriptService() *ScriptService {
 // TODO is there a way to mark this as the API of this object? seems not very go-like
 // TODO how to handle map misses? looks like you get a "zero value" of the Script type?
 func getScript(service ScriptService, scriptId string) (*Script, error) {
-	fmt.Print(scriptId)
 	if script, ok := service.ScriptMap[scriptId]; ok {
 		return &script, nil
 	}

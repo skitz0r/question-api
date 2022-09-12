@@ -9,7 +9,6 @@ import (
 )
 
 func Handler(request events.APIGatewayV2HTTPRequest) (events.APIGatewayProxyResponse, error) {
-	fmt.Print(request.Body)
 	var userAnswer Answer = parseJson(request.Body)
 	return events.APIGatewayProxyResponse{
 		Body:       getNextQuestionBody(userAnswer),
@@ -36,9 +35,6 @@ func parseJson(requestBody string) Answer {
 // This function handles a QuestionRequest and determines what Question the user should be asked
 // next based on the Script.
 func getNextQuestionBody(answer Answer) string {
-
-	fmt.Print(answer)
-
 	nextQuestion, qerr := NextQuestion(answer)
 
 	if qerr != nil {
@@ -49,8 +45,6 @@ func getNextQuestionBody(answer Answer) string {
 		Question: *nextQuestion,
 		ScriptId: answer.ScriptId,
 	}
-
-	fmt.Print(response)
 
 	var bytes, jerr = json.MarshalIndent(response, "", "\t")
 
